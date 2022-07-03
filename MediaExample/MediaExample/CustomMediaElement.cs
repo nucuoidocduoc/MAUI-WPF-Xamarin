@@ -1,9 +1,12 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MediaExample
 {
+    [TemplatePart(Name = "PART_ListMedia", Type = typeof(ListView))]
     [TemplatePart(Name = "PART_Media", Type = typeof(MediaElement))]
     [TemplatePart(Name = "PART_Play", Type = typeof(Button))]
     [TemplatePart(Name = "PART_Pause", Type = typeof(Button))]
@@ -23,6 +26,8 @@ namespace MediaExample
         public static DependencyProperty PauseCommandProperty;
 
         public static DependencyProperty SourceProperty;
+
+        public static DependencyProperty ListSourceProperty;
 
         static CustomMediaElement()
         {
@@ -66,6 +71,13 @@ namespace MediaExample
                 new PropertyMetadata((d, e) =>
                 {
                 }));
+
+            ListSourceProperty = DependencyProperty.Register("ListSource",
+                typeof(ObservableCollection<ItemSong>),
+                typeof(CustomMediaElement),
+                new PropertyMetadata((d, e) =>
+                {
+                }));
         }
 
         public ICommand PlayCommand
@@ -101,14 +113,20 @@ namespace MediaExample
         public string Source
         {
             get { return (string)GetValue(SourceProperty); }
-            set { SetValue(PauseCommandProperty, value); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        public ObservableCollection<ItemSong> ListSource
+        {
+            get { return (ObservableCollection<ItemSong>)GetValue(ListSourceProperty); }
+            set { SetValue(ListSourceProperty, value); }
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            var playList = GetTemplateChild("PART_PlayList") as ListView;
+            var playList = GetTemplateChild("PART_ListMedia") as ListView;
 
             var mediaElement = GetTemplateChild("PART_Media") as MediaElement;
             if (mediaElement != null)
@@ -122,8 +140,12 @@ namespace MediaExample
             {
                 playBtn.Click += (sender, e) =>
                 {
-                    mediaElement?.Play();
-                    if (PlayCommand != null && NextCommand.CanExecute(sender))
+                    if (mediaElement != null)
+                    {
+                        mediaElement.Play();
+                    }
+                    //mediaElement?.Play();
+                    if (PlayCommand != null && PlayCommand.CanExecute(sender))
                     {
                         PlayCommand.Execute(new { sender, e });
                     }
@@ -135,6 +157,12 @@ namespace MediaExample
             {
                 nextBtn.Click += (sender, e) =>
                 {
+                    var indeOfCurrent = ListSource.Select(x => x.LinkSong).ToList().IndexOf(Source);
+                    if (indeOfCurrent < ListSource.Count - 1)
+                    {
+                        Source = ListSource[indeOfCurrent + 1].LinkSong;
+                        playList.SelectedIndex = indeOfCurrent + 1;
+                    }
                     if (NextCommand != null && NextCommand.CanExecute(sender))
                     {
                         NextCommand.Execute(new { sender, e });

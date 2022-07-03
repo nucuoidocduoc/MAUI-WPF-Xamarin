@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <local:CustomMediaElement Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=SourceMedia}" />
+
+        <local:CustomMediaElement
+            Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, Path=SourceMedia}"
+                                  PlayCommand="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window},Path=PlayCommand}"
+                                  NextCommand="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window},Path=NextCommand}"
+            ListSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window},Path=ListVideos}" />
     </Grid>
 </Window>

@@ -10,17 +10,30 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type local:CustomMediaElement}">
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <MediaElement Name="PART_Media" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source}" />
-                                <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" Margin="10,10,10,10">
-                                    <Button Name="PART_Prev" Content="Prev" />
-                                    <Button Name="PART_Play" Content="Play" />
-                                    <Button Name="PART_Pause" Content="Pause" />
-                                    <Button Name="PART_Next" Content="Next" />
-                                </StackPanel>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <ListView Name="PART_ListMedia" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ListSource}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Image Source="{Binding Image}" Height="100" />
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <Grid Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <MediaElement Name="PART_Media" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source}" />
+                                    <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" Margin="10,10,10,10">
+                                        <Button Name="PART_Prev" Content="Prev" />
+                                        <Button Name="PART_Play" Content="Play" />
+                                        <Button Name="PART_Pause" Content="Pause" />
+                                        <Button Name="PART_Next" Content="Next" />
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
